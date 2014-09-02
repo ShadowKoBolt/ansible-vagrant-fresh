@@ -1,0 +1,32 @@
+---
+ - name: install ide
+   apt: name={{item}} state=latest update_cache=yes
+   with_items:
+     - git
+     - curl
+     - vim
+     - tmux
+
+ - name: get fresh install shell script
+   get_url: url=http://get.freshshell.com dest=/home/vagrant/fresh_install.sh mode=0777 force=yes
+
+ - name: install fresh from shell script
+   shell: /home/vagrant/fresh_install.sh >> /home/vagrant/fresh_install.log
+   sudo: yes
+   sudo_user: vagrant 
+
+ - name: configure fresh to use master .freshrc
+   lineinfile: dest=/etc/profile line='export FRESH_RCFILE="/home/master/.freshrc"'
+
+ - name: configure fresh to use master .freshrc
+   lineinfile: dest=/etc/profile line='export FRESH_LOCAL="/home/master/.dotfiles"'
+
+ - name: remove old dotfiles 
+   file: dest=/home/vagrant/{{item}} state=absent
+   with_items: 
+     - .bashrc
+
+ - name: fresh update (may take a minute)
+   shell: "FRESH_RCFILE=/home/master/.freshrc FRESH_PATH=/home/vagrant/.fresh FRESH_LOCAL=/home/master/.dotfiles /home/vagrant/.fresh/build/bin/fresh update >> /home/vagrant/fresh_update.log"
+   sudo: yes
+   sudo_user: vagrant 
