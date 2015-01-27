@@ -5,7 +5,12 @@
      - git
      - curl
      - vim
-     - tmux
+
+ - name: add tmux repo
+   apt_repository: repo='ppa:pi-rho/dev'
+
+ - name: install tmux
+   apt: name=tmux state=latest update_cache=yes 
 
  - name: get fresh install shell script
    get_url: url=http://get.freshshell.com dest=/home/vagrant/fresh_install.sh mode=0777 force=yes
