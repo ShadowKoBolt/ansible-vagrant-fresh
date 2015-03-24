@@ -8,6 +8,7 @@
 
  - name: add tmux repo
    apt_repository: repo='ppa:pi-rho/dev'
+   when: ansible_distribution == "Ubuntu"
 
  - name: install tmux
    apt: name=tmux state=latest update_cache=yes 
